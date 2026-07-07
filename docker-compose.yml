@@ -1,14 +1,29 @@
 services:
   backend:
     build: ./backend
-    ports:
-      - "8080:8080"
     env_file:
       - ./backend/.env
 
   frontend:
     build: ./frontend
-    ports:
-      - "80:80"
     depends_on:
       - backend
+
+  caddy:
+    image: caddy:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - DOMAIN=${DOMAIN}
+    depends_on:
+      - frontend
+
+volumes:
+  caddy_data:
+  caddy_config:
