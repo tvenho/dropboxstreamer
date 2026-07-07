@@ -27,6 +27,11 @@
           <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
         </svg>
       </button>
+      <button class="btn-next" @click="emit('ended')" :disabled="!track || loading" title="Seuraava kappale">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="4" width="2" height="16"/>
+        </svg>
+      </button>
     </div>
 
     <div class="player-progress">
@@ -208,6 +213,27 @@ function formatTime(seconds) {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
+}
+
+.btn-next {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.btn-next:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+
+.btn-next:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .btn-play {
