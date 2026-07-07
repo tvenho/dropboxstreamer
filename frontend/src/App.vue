@@ -8,10 +8,10 @@
     </header>
 
     <div class="app-body">
-      <FileList @play="onPlay" />
+      <FileList @play="onPlay" :activePath="currentTrack?.path" />
     </div>
 
-    <AudioPlayer :track="currentTrack" />
+    <AudioPlayer :track="currentTrack" @ended="onTrackEnded" />
   </div>
 </template>
 
@@ -21,9 +21,18 @@ import FileList from './components/FileList.vue'
 import AudioPlayer from './components/AudioPlayer.vue'
 
 const currentTrack = ref(null)
+const currentFiles = ref([])
 
-function onPlay(track) {
+function onPlay({ track, files }) {
   currentTrack.value = track
+  currentFiles.value = files
+}
+
+function onTrackEnded() {
+  const idx = currentFiles.value.findIndex(f => f.path === currentTrack.value?.path)
+  if (idx >= 0 && idx < currentFiles.value.length - 1) {
+    currentTrack.value = currentFiles.value[idx + 1]
+  }
 }
 </script>
 

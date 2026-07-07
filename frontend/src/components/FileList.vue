@@ -18,7 +18,7 @@
         v-for="file in files"
         :key="file.path"
         class="file-item"
-        :class="{ active: currentTrack?.path === file.path, folder: file.type === 'folder' }"
+        :class="{ active: props.activePath === file.path, folder: file.type === 'folder' }"
         @click="onItemClick(file)"
       >
         <span class="file-icon">
@@ -55,13 +55,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 
+const props = defineProps({ activePath: String })
 const emit = defineEmits(['play'])
 
 const files = ref([])
 const currentPath = ref('')
 const loading = ref(false)
 const error = ref(null)
-const currentTrack = ref(null)
 
 const breadcrumbs = computed(() => {
   if (!currentPath.value) return []
@@ -95,8 +95,7 @@ function onItemClick(file) {
   if (file.type === 'folder') {
     loadFiles(file.path)
   } else {
-    currentTrack.value = file
-    emit('play', file)
+    emit('play', { track: file, files: files.value.filter(f => f.type === 'file') })
   }
 }
 

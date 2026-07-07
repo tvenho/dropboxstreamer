@@ -65,9 +65,8 @@
 <script setup>
 import { ref, watch } from 'vue'
 
-const props = defineProps({
-  track: Object
-})
+const props = defineProps({ track: Object })
+const emit = defineEmits(['ended'])
 
 const audioEl = ref(null)
 const playing = ref(false)
@@ -124,6 +123,7 @@ function onLoaded() {
 function onEnded() {
   playing.value = false
   currentTime.value = 0
+  emit('ended')
 }
 
 function onError() {
