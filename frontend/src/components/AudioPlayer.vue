@@ -97,12 +97,32 @@ watch(() => props.track, async (newTrack) => {
     audio.volume = volume.value
     await audio.play()
     playing.value = true
+    updateMediaSession(newTrack)
   } catch (e) {
     errorMsg.value = 'Virhe: ' + e.message
   } finally {
     loading.value = false
   }
 })
+
+function updateMediaSession(track) {
+  if (!('mediaSession' in navigator)) return
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: track.name.replace(/\.mp3$/i, '')
+  })
+  navigator.mediaSession.setActionHandler('play', () => {
+    audioEl.value.play()
+    playing.value = true
+    navigator.mediaSession.playbackState = 'playing'
+  })
+  navigator.mediaSession.setActionHandler('pause', () => {
+    audioEl.value.pause()
+    playing.value = false
+    navigator.mediaSession.playbackState = 'paused'
+  })
+  navigator.mediaSession.setActionHandler('nexttrack', () => emit('ended'))
+  navigator.mediaSession.playbackState = 'playing'
+}
 
 async function togglePlay() {
   const audio = audioEl.value
@@ -111,9 +131,11 @@ async function togglePlay() {
   if (playing.value) {
     audio.pause()
     playing.value = false
+    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused'
   } else {
     await audio.play()
     playing.value = true
+    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing'
   }
 }
 
