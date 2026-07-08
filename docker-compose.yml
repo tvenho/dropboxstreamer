@@ -21,6 +21,8 @@ services:
       - caddy_config:/config
     environment:
       - DOMAIN=${DOMAIN}
+      - BASIC_AUTH_USER=${BASIC_AUTH_USER}
+      - BASIC_AUTH_HASH=${BASIC_AUTH_HASH}
     depends_on:
       - frontend
 
