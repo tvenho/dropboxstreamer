@@ -71,6 +71,10 @@ public class DropboxService {
     }
 
     public String getTemporaryLink(String path) {
+        if (path == null || !path.toLowerCase().endsWith(".mp3")) {
+            throw new IllegalArgumentException("Only MP3 files are allowed");
+        }
+
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
